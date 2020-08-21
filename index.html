@@ -1,0 +1,320 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>STK 로밍 세계지도</title>
+<link href="skt_worldmap.css" rel="stylesheet" type="text/css"/>
+
+<!-- 부트스트랩 CSS -->
+<link rel="stylesheet" href="http://www.benchbee.co.kr/skt/css/bootstrap.min.css" />
+<link rel="stylesheet" href="http://www.benchbee.co.kr/skt/css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="http://www.benchbee.co.kr/skt/css/jquery-ui.css" />
+<link rel="stylesheet" href="http://www.benchbee.co.kr/skt/css/datepicker.css" />
+<link rel="stylesheet" href="http://www.benchbee.co.kr/skt/css/uniform.css" />
+<link rel="stylesheet" href="http://www.benchbee.co.kr/skt/css/select2.css" />
+<link rel="stylesheet" href="http://www.benchbee.co.kr/skt/css/unicorn.main.css" />
+<link rel="stylesheet" href="http://www.benchbee.co.kr/skt/css/unicorn.grey.css" class="skin-color" />
+<link rel="stylesheet" href="http://www.benchbee.co.kr/skt/css/magnific-popup.css">
+
+<!-- 그래프 JS -->
+        <script src="http://www.benchbee.co.kr/skt/js/jquery.min.js"></script>
+        <script src="http://www.benchbee.co.kr/skt/common/editable/bootstrap.min.js"></script>
+        <script src="http://www.benchbee.co.kr/skt/js/jquery.uniform.js"></script>
+        <script src="http://www.benchbee.co.kr/skt/js/select2.min.js"></script>
+        <script src="http://www.benchbee.co.kr/skt/js/jquery.validate.js"></script>
+        <script src="http://www.benchbee.co.kr/skt/js/jquery.flot.min.js"></script>
+        <script src="http://www.benchbee.co.kr/skt/js/jquery.flot.pie.min.js"></script>
+        <script src="http://www.benchbee.co.kr/skt/js/jquery.flot.resize.min.js"></script>
+        <script src="http://www.benchbee.co.kr/skt/js/unicorn.js"></script>
+        <script src="http://www.benchbee.co.kr/skt/js/unicorn.charts.js"></script>
+
+<script src="sample_graph.js"></script><!-- 기업용 통계웹 그래프 그대로 가져온 파일 -->
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.js"></script>
+
+
+</head>
+<body style="background-color: #eeeeee;">
+  <div class="body_wrap">
+    <div class="quality_explain">
+      <div style="margin-top: 9px;">
+        <div class="circle_exp indigo"></div><span class="quality_txt">매우좋음</span>
+      </div>
+      <div>
+        <div class="circle_exp elemetal"></div><span class="quality_txt">좋음</span>
+      </div>
+      <div>
+        <div class="circle_exp dorange"></div><span class="quality_txt">나쁨</span>
+      </div>
+      <div>
+        <div class="circle_exp dred"></div><span class="quality_txt">매우나쁨</span>
+      </div>
+    </div>
+    <div class="dimBg"></div>
+    <div class="circ_wrap">
+      <div class="circle_box"></div>
+      <div class="rpop_box">
+        <canvas id="canvas"></canvas>
+          <div class="rpop_cont">
+            <span class="nation_txt">국가이름</span>
+            <div class="rpud_line"></div>
+            <div class="rpdw_box">
+              <div class="rpdur_wrap">
+                <span class="rpdur_bit_txt">다운로드</span>
+                <span class="rpdur_bal rpd_down">15.59</span>
+                <span class="rpdur_unit">Mbps</span>
+              </div>
+            </div>
+            <div class="rpsmall_graph">
+              <div class="chart" id="lte" style="width: 311px; height: 83px; background-color: #f7f7f7;" ></div>
+            </div>
+          </div>
+      </div>
+      <div class="fpopbox">
+        <div class="fp_valbox">
+          <div class="fp_date_title">
+            <span class="fpnation_title">국가이름</span>
+            <span class="fpdate_val">2020년 2월</span>
+          </div>
+          <div class="fp_valdiv"></div>
+          <div class="fpdw_box">
+            <span class="fpdur_bit_txt">다운로드</span>
+            <span class="fpdur_bal rpd_down">15.59</span>
+            <span class="fpdur_bunit">Mbps</span>
+          </div>
+          <img class="fp_closebtn" src="images/fpbtn_close.png" width="28" height="28" alt="닫기버튼"/>
+        </div>
+        <div class="fpud_line"></div>
+        <span class="fpvalhetxt">LTE다운로드(Mbps)</span>
+        <div class="fp_graph_wrap">
+          <div class="chart" id="3g" style="width: 771px; height: 315px; background-color: #f7f7f7;" ></div>
+        </div>
+      </div>
+    </div>
+  </div>
+<script>
+  window.onload = function(){
+
+    var nations = ['괌','대만','말레이지아','미국','베트남','일본','중국','태국','프랑스','필리핀','홍콩'];
+    var coordinates =[[601,338],[445,302],[385,325],[924,218],[397,278],[493,230],[397,194],[385,302],[110,218],[469,349],[433,254]];
+    var downs_eval = [242.3, 489.1, 52.78, 378.5, 12.61, 294.5, 160.7, 302.7, 108.4, 261.2, 19.54]; //페이크 더미 다운값
+
+    var layer_rollover_colors = ['#fd0000','#fb8500','#03d6d8','#027ad7'];
+
+    for(i=0; i<nations.length; i++){
+      var roll_color = state_check(downs_eval[i]);
+      var lrcolor = layer_rollover_colors[roll_color];
+      var center_x = coordinates[i][0];
+      var center_y = coordinates[i][1];
+
+  		var tag = '<div class="cic_wbtn" id="cic_wbtn'+(i+1)+'">';
+      tag +='<div class="cic_bg_hover" id="cic_bg_hover'+(i+1)+'"></div>';
+      tag +='<div class="cic_bg" id="cic_bg'+(i+1)+'"></div>';
+  		tag +='<div class="cic_dotbtn" id="cic_dotbtn'+(i+1)+'"></div>';
+  		tag +='<div class="cic_dotbtn_hover" id="cic_dotbtn_hover'+(i+1)+'"></div>';
+      tag +='</div>';
+  		tag +='<span class="cic_title" id="cic_title'+(i+1)+'">'+nations[i]+'</span>';
+
+
+  		$( '.circle_box' ).append(tag);
+
+      $('#cic_wbtn'+(i+1)).css({
+        left : center_x-$('#cic_bg'+(i+1)).width()/2,
+        top : center_y-$('#cic_bg'+(i+1)).height()/2,
+        'background-color' : lrcolor
+      });
+
+      $('#cic_bg'+(i+1)).css({
+        'background-color' : lrcolor
+      });
+
+      $('#cic_dotbtn'+(i+1)).css({
+        left : $('#cic_bg'+(i+1)).width()/2 - $('#cic_dotbtn'+(i+1)).width()/2,
+        top : $('#cic_bg'+(i+1)).height()/2 - $('#cic_dotbtn'+(i+1)).height()/2,
+        'background-color' : lrcolor
+      });
+
+      $('#cic_dotbtn_hover'+(i+1)).css({
+        left : $('#cic_bg'+(i+1)).width()/2 - $('#cic_dotbtn'+(i+1)).width()/2,
+        top : $('#cic_bg'+(i+1)).height()/2 - $('#cic_dotbtn'+(i+1)).height()/2
+      });
+
+      $('#cic_bg_hover'+(i+1)).css({
+        left : $('#cic_bg'+(i+1)).width()/2 - $('#cic_dotbtn'+(i+1)).width()/2,
+        top : $('#cic_bg'+(i+1)).height()/2 - $('#cic_dotbtn'+(i+1)).height()/2,
+        'background-color' : lrcolor
+      });
+
+      direction_title(i); //국가이름 왼쪽 오른쪽 방향잡기
+
+      $('#cic_wbtn'+(i+1)).hover(function() {
+
+  			var keyNumber = $(this).attr('id');
+  			keynum = keyNumber.substr(8); //cic_wbtn
+        $('#cic_dotbtn_hover'+keynum).fadeIn(700);
+        $('#cic_bg_hover'+keynum).show();
+
+        loop(keynum);
+        $('.rpop_box').show();
+        roll_popup(keynum);
+
+        }, function() {
+
+        $('#cic_dotbtn_hover'+keynum).hide();
+        $('#cic_bg_hover'+keynum).hide();
+        $('.rpop_box').hide();
+        }
+      );
+
+      $('.cic_wbtn').click(function(){
+        var keyNumber = $(this).attr('id');
+  			keynum = keyNumber.substr(8); //'cic_wbtn' 스트링 뒷값을 키로 잡음
+        $('.fpopbox').fadeIn();
+        $('.dimBg').fadeIn();
+        $('.fpnation_title').text(nations[keynum-1]);
+      });
+
+    };
+
+    function loop(keynum){
+        $('#cic_bg_hover'+keynum).transition({
+          opacity: 0,
+          scale: 8
+        }, 1900, 'linear',
+          function() {
+            loop(keynum);
+          }).transition({scale: 1, opacity: 1}, 1);
+    };
+
+    //LTE 다운값 0-100: 0, 100-250: 1, 250-350: 2, 350-500: 3 / 팝업 외각컬러값 설정
+    function state_check(Costeval){
+      var result_eval = 0;
+      if(350 <= Costeval && Costeval < 500){
+	      result_eval = 3;
+      }else if(250 <= Costeval && Costeval < 350){
+	      result_eval = 2;
+      }else if(100 <= Costeval && Costeval < 250){
+        result_eval = 1;
+      }else{
+        result_eval = 0;
+      }
+      return result_eval;
+    }
+
+    function direction_title(coord_i){
+      var center_x = coordinates[coord_i][0];
+      if(center_x < 649){
+        $('#cic_title'+(coord_i+1)).css({
+          left : center_x + 12
+        });
+      }else{
+        $('#cic_title'+(coord_i+1)).css({
+          left : center_x - $('#cic_title'+(i+1)).width() - 14
+        });
+      }
+      $('#cic_title'+(coord_i+1)).css({
+          width : nations[coord_i].length * 15,
+          top : center_y-$('#cic_title'+(i+1)).height()/2 + 2
+      });
+    }
+
+    function roll_popup(keynum){
+      var center_x = coordinates[keynum-1][0];
+      var center_y = coordinates[keynum-1][1];
+      var roll_color = state_check(downs_eval[keynum-1]);
+      var lrcolor = layer_rollover_colors[roll_color];
+      var titlength = $('#cic_title'+(keynum)).text().length;
+
+      var canvas = document.getElementById('canvas');
+      canvas.width = 385;
+      canvas.height = 232;
+
+      // 태평양 넘으면 국가이름, 말풍선 역방향
+      if (canvas.getContext) {
+        var ctx = canvas.getContext('2d');
+          ctx.save();
+        ctx.strokeStyle = lrcolor;
+        ctx.fillStyle = '#ffffff';
+        ctx.shadowBlur = 9;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.shadowColor = 'rgba(0, 0, 0, .3)';
+
+        if(center_x < 649){
+          ctx.moveTo(26, 8); ctx.lineTo(26, 101);  ctx.lineTo(9, 115); ctx.lineTo(26, 129);
+          ctx.lineTo(26, 223);  ctx.lineTo(376, 223); ctx.lineTo(376, 8); ctx.lineTo(26, 8);
+          ctx.stroke();
+
+          ctx.beginPath();  ctx.moveTo(27, 9);  ctx.lineTo(27, 101);  ctx.lineTo(10, 115);  ctx.lineTo(27, 129);
+          ctx.lineTo(27, 222);  ctx.lineTo(375, 222); ctx.lineTo(375, 9); ctx.moveTo(27, 9);
+          ctx.fill();
+            ctx.restore();
+
+          $('.rpop_box').css({
+            left : center_x + titlength * 18,
+            top : center_y - $('#canvas').height() / 2
+          });
+          $('.nation_txt').text(nations[keynum-1]);
+          $('.rpd_down').text(downs_eval[keynum-1]);
+          $('.rpop_cont').css({ left : 46 });
+
+        }else if(center_x > 649){
+          ctx.moveTo(9, 8); ctx.lineTo(9, 223); ctx.lineTo(359, 223); ctx.lineTo(359, 129);
+          ctx.lineTo(376, 115); ctx.lineTo(359, 101); ctx.lineTo(359, 8); ctx.lineTo(9, 8);
+          ctx.stroke();
+
+          ctx.beginPath();  ctx.moveTo(10, 9);  ctx.lineTo(10, 222);  ctx.lineTo(358, 222); ctx.lineTo(358, 129);
+          ctx.lineTo(375, 115); ctx.lineTo(358, 101); ctx.lineTo(358, 9);ctx.moveTo(10, 9);
+          ctx.fill();
+            ctx.restore();
+
+          $('.rpop_box').css({
+            left : center_x - (titlength * 18) - $('#canvas').width() - 10,
+            top : center_y - $('#canvas').height() / 2
+          });
+          $('.nation_txt').text(nations[keynum-1]);
+          $('.rpd_down').text(downs_eval[keynum-1]);
+          $('.rpop_cont').css({ left : 29 });
+        }
+      }else{ console.log('브라우저에서 캔버스 호출을 실패했습니다.'); }
+
+    }
+
+    $('.fp_closebtn').click(function(){
+        $('.fpopbox').fadeOut();
+        $('.dimBg').fadeOut();
+        return false;
+    });
+
+    $('.dimBg').click(function(){
+        $('.fpopbox').fadeOut();
+        $('.dimBg').fadeOut();
+        return false;
+    });
+
+    $(".fp_closebtn").hover(
+      function () {
+        $(this).css("opacity", 0.7);
+      },
+      function () {
+        $(this).css("opacity", 1);
+      }
+    );
+
+    //가운데 body_wrap 정렬 & 마진
+    winSize_width = $(window).width();
+    make_Thresize(winSize_width);
+
+    $( window ).resize( function() {
+    	winSize_width = $(window).width();
+  		make_Thresize(winSize_width);
+    });
+
+    function make_Thresize(winSize){
+      left_margin_size = winSize - 42;
+      $('.body_wrap').width(left_margin_size);
+    }
+
+  };
+</script>
+</body>
+</html>

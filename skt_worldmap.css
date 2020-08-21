@@ -1,0 +1,62 @@
+@charset 'utf-8';
+/* SKT worldmap dashborad css */
+/* Start date # 2020-02-20*/
+/* =initialize basic bootstrap
+------------------------------------------------------------------------*/
+
+.body_wrap{
+   margin-top: 30px;
+   margin-left: 20px; /* margin-right: 20px */
+   width: 1182px;
+   height: 586px;
+   border:1px solid #dcdcdc;
+   background-color: #f9f9f9;
+}
+.circ_wrap{ position: absolute; width: 1142px; height: 584px; display: inline-block; background: url(images/dot_worldmapbg.png); left:50%; margin-left:-571px; }
+.circle_box{ position: absolute; width: 1142px; height: 584px; }
+.quality_explain{ position: absolute; top:486px; left: 39px; background-color: #f7f7f7; border:1px solid #dcdcdc; width: 104px; height: 102px; }
+.quality_txt{ font-size: 12px; margin-left: 7px; }
+.circle_exp{ width: 6px; height: 6px; border-radius: 3px; display: inline-block; vertical-align: top; margin-top: 7px; margin-left: 16px; }
+.indigo{ background-color: #027ad7; } .elemetal{ background-color: #03d6d8; } .dorange{ background-color: #fb8500; } .dred{ background-color: #fd0000; }
+.cic_bg{ position: absolute; width: 24px; height: 24px; border-radius: 12px; opacity: 0.25; }
+.cic_dotbtn{ position: absolute; width: 8px; height: 8px; border-radius: 4px; }
+.cic_title{ position: absolute; font-size: 16px; font-weight: bold; letter-spacing: -1px; text-shadow: 0px 0px 4px #ffffff;}
+.cic_wbtn{ position: absolute; cursor: pointer; }
+.cic_bg_hover{ position: absolute; width: 8px; height: 8px; border-radius: 12px; display: none; }
+.cic_dotbtn_hover{ position: absolute; width: 8px; height: 8px; border-radius: 4px; display: none; background-color: #000000; opacity: 0.5; }
+.canvas{ width: 385px; height: 232px; position: absolute; z-index: 1000; }
+.rpop_box{ position: absolute; width: 385px; height: 232px; display: none; z-index: 1002; }
+.rpop_cont{ position: absolute; width: 385px; height: 232px; top:23px; left: 46px; z-index: 1001; }
+.nation_txt{ font-size: 20px; font-weight: bold; display: block; }
+.rpud_line{ display: block; width:310px; height: 1px; background-color: #cccccc; margin-top: 8px; margin-bottom: 9px; }
+.rptree_box{ width:310px; display: table; margin-bottom: 9px; }
+.rpdur_wrap{ display: table-cell; }
+.rpdur_tit_txt{ font-size: 12px; display: block; }
+.rpdur_val{ font-size: 26px; display: block; }
+.rpdw_box{ margin-top: 18px; margin-bottom: 9px;  }
+.rpdur_bit_txt{ font-size: 10px; display: inline-block; }
+.rpdur_bal{ font-size: 33px; display: inline-block; }
+.rpdur_unit{ font-size: 8px; display: inline-block; color: #9d9d9d; }
+.rpsmall_graph{ margin-top: 2px; width: 311px; height: 93px; }
+.fpopbox{ position: absolute; width: 809px; height: 485px; background-color: #ffffff; border-radius:2px; box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.4); display: none; z-index: 1004; top:45px; left: 167px;}
+.fp_valbox{ margin-left: 19px; height: 105px; }
+.fp_date_title{ display: inline-block; vertical-align: top; width: 263px; margin-top: 25px; }
+.fp_valdiv{ width: 1px; height: 63px; background-color: #cccccc; display: inline-block; margin-top: 21px; }
+.fptree_box{ display: inline-block; vertical-align: top; margin-top: 27px; margin-left: 30px; }
+.fpnation_title{ font-size: 26px; font-weight: bold; letter-spacing: -1px; }
+.fpdate_val{ font-size: 12px; display: block; margin-top: 4px; margin-left: 4px; }
+.fpdur_wrap{ display: inline-block; }
+.fpdur_tit_txt{ display: block; font-size: 12px; }
+.fpdur_val{ display: inline-block; margin-top: 11px; font-size: 30px; }
+.fpdur_unit{ margin-left: 2px; font-size: 12px; color: #9d9d9d; }
+.fp_closebtn{ margin-top: 4px; margin-right: 4px; float: right; cursor: pointer; }
+.fpvalhetxt{ float: right; font-size: 12px; color: #9d9d9d; margin-right: 19px; margin-top: 10px; letter-spacing: 0px; }
+.fpdw_box{ display: inline-block; vertical-align: top; margin-top: 53px; margin-left: 17px;}
+.fpdur_bit_txt{ font-size: 13px; }
+.fpdur_bal{ font-size: 48px;}
+.fpdur_bunit{ font-size: 11px; color: #9d9d9d; }
+.fpud_line{ width: 771px; height: 1px; background-color: #cccccc; margin-left: 19px; }
+.fp_graph_wrap{ width: 771px; height: 325px; margin-top: 33px; margin-left: 19px;}
+.dimBg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: #000; opacity: .5; filter: alpha(opacity=50); display: none; z-index: 1003; }
+
+/* Recent date # 2020-03-02 */
